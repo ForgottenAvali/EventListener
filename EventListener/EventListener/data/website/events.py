@@ -154,7 +154,6 @@ async def delete_event_on_api(website_id):
     endpoint = f"{ENDPOINT_BASE_EVENT}/{website_id}/delete"
 
     headers = {
-        "content-type": "application/json",
         "x-api-key": API_KEY,
         "user-agent": f"{CONTACT}",
     }
