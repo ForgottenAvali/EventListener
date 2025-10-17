@@ -9,37 +9,34 @@ A open-source, read only vrchat bot that will grab events from the given groups 
 ### Console Commands
 
 - **`help`**
-  Lists all the commands usable in the console
+  - Lists all the commands usable in the console
 
 - **`exit`**/**`quit`**
-  Safely exits the bot
+  - Safely exits the bot
 
 - **`reload_env`**
-  Reloads the GROUP_ID portion of the .env file, mainly for if you want to add more groups to your system without restarting the bot
+  - Reloads the GROUP_ID portion of the .env file, mainly for if you want to add more groups to your system without restarting the bot
 
 - **`add_group <groupID>`**
-  Adds the given group to the website api straight from the console
+  - Adds the given group to the website api straight from the console
 
 - **`update_group <groupID>`**
-  Updates the given groups data on the website
+  - Updates the given groups data on the website
 
 - **`delete_group <groupID>`**
-  Deletes the given group from the websites api
+  - Deletes the given group from the websites api
 
 - **`refetch`**
-  Re-fetches the events on the group ids in your .env
+  - Re-fetches the events on the group ids in your .env
 
 - **`add_event <groupID> <eventID> <eventTitle> <eventDescription> <StartTime> <EndTime> <Category> <accessType> <platforms>`**
-  Manually add a group to the website through the console in-case the bot doesn't grab it when scanning.
-  Example: `add_event grp_123 cal_123 title description 2025-10-17T02:00:00Z 2025-10-17T03:00:00Z category public standalonewindows,android`
+  - Manually add a group to the website through the console in-case the bot doesn't grab it when scanning.
 
 - **`update_event <websiteEventID> <groupID> <eventID> <eventTitle> <eventDescription> <StartTime> <EndTime> <Category> <accessType> <platforms>`**
-  Updates the given websiteEventID with the new data given
-  Example: `update_event 123 grp_123 cal_123 title description 2025-10-17T02:00:00Z 2025-10-17T03:00:00Z category public standalonewindows,android`
+  - Updates the given websiteEventID with the new data given
 
 - **`delete_event <websiteEventID>`**
-  Deletes the event on the website attached to the given websiteEventID
-  Example: `delete_event 123`
+  - Deletes the event on the website attached to the given websiteEventID
 
 ---
 
