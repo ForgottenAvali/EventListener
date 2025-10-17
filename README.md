@@ -38,8 +38,8 @@ A open-source, read only vrchat bot that will grab events from the given groups 
   Example: `update_event 123 grp_123 cal_123 title description 2025-10-17T02:00:00Z 2025-10-17T03:00:00Z category public standalonewindows,android`
 
 - **`delete_event <websiteEventID>`**
-  Deletes the event on the website attached to the given websiteEventID
-  Example: `delete_event 123`
+- Deletes the event on the website attached to the given websiteEventID
+- Example: `delete_event 123`
 
 ---
 
