@@ -1,4 +1,4 @@
-# VRChat Group & Event Syncing
+# VRChat Group Event Listener
 
 A open-source, read only vrchat bot that will grab events from the given groups and optionally mirror them to a custom website's api.
 
