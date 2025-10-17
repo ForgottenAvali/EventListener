@@ -91,7 +91,6 @@ async def delete_group_on_api(group_id):
     endpoint = f"{ENDPOINT_BASE_GROUP}/{group_id}/delete"
 
     headers = {
-        "content-type": "application/json",
         "x-api-key": API_KEY,
         "user-agent": f"{CONTACT}",
     }
@@ -109,7 +108,7 @@ async def delete_group_on_api(group_id):
         if response.status_code in (200, 201):
             print(f"{ts()} [Website] Successfully deleted group '{group_id}'.\n[Website Response] {response_text}")
         else:
-            print(f"{ts()} [Website] Failed to update event '{group_id}' ({response.status_code}): {response_text}")
+            print(f"{ts()} [Website] Failed to delete group '{group_id}' ({response.status_code}): {response_text}")
 
     except Exception as ex:
         print(f"{ts()} [Website] Error updating event '{group_id}': {ex}")
