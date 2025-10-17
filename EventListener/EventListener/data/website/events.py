@@ -171,7 +171,7 @@ async def delete_event_on_api(website_id):
         if response.status_code in (200, 201):
             print(f"{ts()} [Website] Successfully deleted event '{website_id}'.\n[Website Response] {response_text}")
         else:
-            print(f"{ts()} [Website] Failed to update event '{website_id}' ({response.status_code}): {response_text}")
+            print(f"{ts()} [Website] Failed to delete event '{website_id}' ({response.status_code}): {response_text}")
 
     except Exception as ex:
-        print(f"{ts()} [Website] Error updating event '{website_id}': {ex}")
+        print(f"{ts()} [Website] Error deleting event '{website_id}': {ex}")
