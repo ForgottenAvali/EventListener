@@ -103,11 +103,11 @@ async def command_listener():
 
         # Update a event on the website
         elif command == "update_event":
-            if len(parts) < 11:
+            if len(parts) < 13:
                 print(f"{ts()} [System] Usage:")
-                print("  update_event <website_event_id> <group_id> <event_id> <title> <description> <start_time> <end_time> <category> <access_type> <platforms>")
+                print("  update_event <website_event_id> <group_id> <event_id> <title> <description> <start_time> <end_time> <category> <access_type> <platforms> <image_url> <tags>")
                 print("  Example:")
-                print('  update_event 123 grp_123 cal_123 title description 2025-10-15T20:00:00Z 2025-10-15T21:00:00Z category public standalonewindows,android')
+                print('  update_event 123 grp_123 cal_123 title description 2025-10-15T20:00:00Z 2025-10-15T21:00:00Z category public standalonewindows,android https://api.vrchat.cloud/api/1/file/file_123/1/file tag,tag1,tag2')
                 continue
 
             website_id = parts[1]
@@ -120,8 +120,10 @@ async def command_listener():
             category = parts[8]
             access_type = parts[9]
             platforms = parts[10].split(",")
+            image = parts[11]
+            tags = parts[12].split(",")
 
-            await update_event_on_api(website_id, group_id, event_id, title, description, starts_at, ends_at, category, access_type, platforms)
+            await update_event_on_api(website_id, group_id, event_id, title, description, starts_at, ends_at, category, access_type, platforms, image, tags)
             continue
 
         # Delete a event on the website
