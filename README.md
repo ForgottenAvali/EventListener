@@ -32,7 +32,7 @@ A open-source, read only vrchat bot that will grab events from the given groups 
 - **`add_event <groupID> <eventID> <eventTitle> <eventDescription> <StartTime> <EndTime> <Category> <accessType> <platforms>`**
   - Manually add a group to the website through the console in-case the bot doesn't grab it when scanning.
 
-- **`update_event <websiteEventID> <groupID> <eventID> <eventTitle> <eventDescription> <StartTime> <EndTime> <Category> <accessType> <platforms>`**
+- **`update_event <websiteEventID> <groupID> <eventID> <eventTitle> <eventDescription> <StartTime> <EndTime> <Category> <accessType> <platforms> <image_url> <tags>`**
   - Updates the given websiteEventID with the new data given
 
 - **`delete_event <websiteEventID>`**
