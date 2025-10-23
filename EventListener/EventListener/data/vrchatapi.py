@@ -131,6 +131,8 @@ async def fetch_group_events(group_id: str):
                         None, lambda: calendar_api_instance.get_group_calendar_event(group_id, e.id)
                     )
                     platforms = getattr(full_event, "platforms", [])
+                    image = getattr(full_event, "image_url", None)
+                    tags = getattr(full_event, "tags", [])
                 except ApiException:
                     platforms = []
 
@@ -145,7 +147,8 @@ async def fetch_group_events(group_id: str):
                         "category": e.category,
                         "access_type": e.access_type,
                         "platforms": platforms,
-                        "image": e.image_url,
+                        "image": image,
+                        "tags": tags,
                     }
                 )
 
