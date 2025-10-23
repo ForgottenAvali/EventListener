@@ -177,7 +177,7 @@ async def fetch_vrc_events():
     if new_entries:
         save_new_events(new_entries)
         print(f"{ts()} [VRChat-Calendar] Added {len(new_entries)} new events.")
-        # await send_to_website(new_events)
+        await send_to_website(new_events)
     else:
         print(f"{ts()} [VRChat-Calendar] No new events found")
 
