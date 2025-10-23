@@ -36,6 +36,8 @@ async def send_to_website(events):
             "category": str(e["category"]),
             "access_type": str(e["access_type"]),
             "platforms": [str(p) for p in e.get("platforms", [])],
+            "image": str(e["image"]),
+            "tags": [str(p) for p in e.get("tags", [])],
         }
 
         print(f"{ts()} [Website] Sending event: {e['event_id']} from {e['group_id']}")
@@ -102,7 +104,7 @@ async def add_event_to_api(group_id, event_id, title, description, starts_at, en
         print(f"{ts()} [Website] Error creating event '{title}': {ex}")
 
 
-async def update_event_on_api(website_id, group_id, event_id, title, description, starts_at, ends_at, category, access_type, platforms):
+async def update_event_on_api(website_id, group_id, event_id, title, description, starts_at, ends_at, category, access_type, platforms, image, tags):
     if not ENDPOINT_BASE_EVENT or not API_KEY:
         print(f"{ts()} [Website] Skipping event update (no endpoint/API key).")
         return
@@ -119,6 +121,8 @@ async def update_event_on_api(website_id, group_id, event_id, title, description
         "category": category,
         "access_type": access_type,
         "platforms": platforms,
+        "image": image,
+        "tags": tags,
     }
 
     headers = {
