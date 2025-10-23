@@ -56,3 +56,19 @@ You will need;
 Install dependencies with:
 
 `pip install -r requirements.txt`
+
+---
+
+## Environment Variables
+
+.. code-block:: sh
+
+        VRC_USER
+        VRC_PASS
+        CONTACT (Format being '{ProgramName}/{Version} (contact: {Email})')
+        GROUP_ID (Separated by commas like 'grp_123, grp_456')
+        ENDPOINT_BASE_EVENT
+        ENDPOINT_EVENT
+        ENDPOINT_BASE_GROUP
+        ENDPOINT_GROUP
+        API_KEY
