@@ -61,8 +61,6 @@ Install dependencies with:
 
 ## Environment Variables
 
-.. code-block:: sh
-
         VRC_USER
         VRC_PASS
         CONTACT (Format being '{ProgramName}/{Version} (contact: {Email})')
