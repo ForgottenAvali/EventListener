@@ -109,7 +109,7 @@ async def update_event_on_api(website_id, group_id, event_id, title, description
         print(f"{ts()} [Website] Skipping event update (no endpoint/API key).")
         return
 
-    endpoint = f"{ENDPOINT_BASE_EVENT}/{website_id}/update"
+    endpoint = f"{ENDPOINT_BASE_EVENT}/{website_id}"
 
     payload = {
         "group_id": group_id,
@@ -134,7 +134,7 @@ async def update_event_on_api(website_id, group_id, event_id, title, description
     print(f"{ts()} [Website] Updating event '{title}' ({event_id}) at {endpoint}...")
 
     try:
-        response = requests.post(endpoint, headers=headers, json=payload, timeout=90)
+        response = requests.put(endpoint, headers=headers, json=payload, timeout=90)
 
         try:
             response_text = json.dumps(response.json(), indent=2)
@@ -155,7 +155,7 @@ async def delete_event_on_api(website_id):
         print(f"{ts()} [Website] Skipping event update (no endpoint/API key).")
         return
 
-    endpoint = f"{ENDPOINT_BASE_EVENT}/{website_id}/delete"
+    endpoint = f"{ENDPOINT_BASE_EVENT}/{website_id}/"
 
     headers = {
         "x-api-key": API_KEY,
@@ -165,7 +165,7 @@ async def delete_event_on_api(website_id):
     print(f"{ts()} [Website] Deleting event id {website_id}")
 
     try:
-        response = requests.post(endpoint, headers=headers, timeout=90)
+        response = requests.delete(endpoint, headers=headers, timeout=90)
 
         try:
             response_text = json.dumps(response.json(), indent=2)
