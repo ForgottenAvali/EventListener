@@ -51,7 +51,7 @@ async def update_group_on_api(group_id: str, name: str, description: str = ""):
         print(f"{ts()} [Website] Skipping group creation (no endpoint/API key).")
         return
     
-    endpoint = f"{ENDPOINT_BASE_GROUP}/{group_id}/update"
+    endpoint = f"{ENDPOINT_BASE_GROUP}/{group_id}/"
     
     headers = {
         "x-api-key": API_KEY,
@@ -67,7 +67,7 @@ async def update_group_on_api(group_id: str, name: str, description: str = ""):
     print(f"{ts()} [Website] Updating group '{name}' ({group_id})")
 
     try:
-        response = requests.post(endpoint, headers=headers, json=payload, timeout=90)
+        response = requests.put(endpoint, headers=headers, json=payload, timeout=90)
 
         try:
             response_text = json.dumps(response.json(), indent=2)
@@ -88,7 +88,7 @@ async def delete_group_on_api(group_id):
         print(f"{ts()} [Website] Skipping event update (no endpoint/API key).")
         return
 
-    endpoint = f"{ENDPOINT_BASE_GROUP}/{group_id}/delete"
+    endpoint = f"{ENDPOINT_BASE_GROUP}/{group_id}/"
 
     headers = {
         "x-api-key": API_KEY,
@@ -98,7 +98,7 @@ async def delete_group_on_api(group_id):
     print(f"{ts()} [Website] Deleting group {group_id}")
 
     try:
-        response = requests.post(endpoint, headers=headers, timeout=90)
+        response = requests.delete(endpoint, headers=headers, timeout=90)
 
         try:
             response_text = json.dumps(response.json(), indent=2)
