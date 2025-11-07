@@ -40,6 +40,14 @@ A open-source, read only vrchat bot that will grab events from the given groups 
 
 ---
 
+## Groups
+
+- Tiny Cafe
+- Wolfie's Hangout
+- More will be added soon!
+
+---
+
 ## Installation
 
 ### Requirements
