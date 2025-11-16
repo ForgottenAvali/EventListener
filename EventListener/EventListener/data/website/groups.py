@@ -2,72 +2,35 @@ import os, json, requests, asyncio
 from dotenv import load_dotenv
 
 
-from data.extra import ts, fmt_date
+from data.extra import ts
 
 
 load_dotenv()
 CONTACT = os.getenv("CONTACT")
 ENDPOINT_BASE_GROUP = os.getenv("ENDPOINT_BASE_GROUP")
-ENDPOINT_GROUP = os.getenv("ENDPOINT_GROUP")
 API_KEY = os.getenv("API_KEY")
 
 
-async def add_group_to_api(group_id: str, name: str, description: str = ""):
-    if not ENDPOINT_GROUP or not API_KEY:
-        print(f"{ts()} [Website] Skipping group creation (no endpoint/API key).")
-        return
-
-    headers = {
-        "x-api-key": API_KEY,
-        "user-agent": f"{CONTACT}",
-    }
-
-    payload = {
-        "group_id": str(group_id),
-        "name": str(name),
-        "description": str(description or ""),
-    }
-
-    print(f"{ts()} [Website] Creating group '{name}' ({group_id})")
-
-    try:
-        response = requests.post(ENDPOINT_GROUP, headers=headers, json=payload, timeout=90)
-        try:
-            response_text = json.dumps(response.json(), indent=2)
-        except Exception:
-            response_text = response.text or "<no response body>"
-
-        if response.status_code in (200, 201):
-            print(f"{ts()} [Website] Group '{name}' created successfully.\n[Website Response - {group_id}] {response_text}")
-        else:
-            print(f"{ts()} [Website] Failed to create group '{name}' ({response.status_code}): {response_text}")
-
-    except Exception as ex:
-        print(f"{ts()} [Website] Error creating group '{name}': {ex}")
-
-
-async def update_group_on_api(group_id: str, name: str, description: str = ""):
+async def add_group_to_api(vrc_group_id: str, name: str):
     if not ENDPOINT_BASE_GROUP or not API_KEY:
         print(f"{ts()} [Website] Skipping group creation (no endpoint/API key).")
         return
-    
-    endpoint = f"{ENDPOINT_BASE_GROUP}/{group_id}/"
-    
+
     headers = {
+        "content-type": "application/json",
         "x-api-key": API_KEY,
-        "user-agent": f"{CONTACT}"
+        "user-agent": str(CONTACT),
     }
 
     payload = {
-        "group_id": str(group_id),
+        "vrc_group_id": str(vrc_group_id),
         "name": str(name),
-        "description": str(description or ""),
     }
 
-    print(f"{ts()} [Website] Updating group '{name}' ({group_id})")
+    print(f"{ts()} [Website] Creating group '{name}' ({vrc_group_id})...")
 
     try:
-        response = requests.put(endpoint, headers=headers, json=payload, timeout=90)
+        response = requests.post(ENDPOINT_BASE_GROUP, headers=headers, json=payload, timeout=90)
 
         try:
             response_text = json.dumps(response.json(), indent=2)
@@ -75,27 +38,69 @@ async def update_group_on_api(group_id: str, name: str, description: str = ""):
             response_text = response.text or "<no response body>"
 
         if response.status_code in (200, 201):
-            print(f"{ts()} [Website] Successfully updated group '{name}'.\n[Website Response] {response_text}")
+            print(f"{ts()} [Website] Group created.\n[Website Response] {response_text}")
         else:
-            print(f"{ts()} [Website] Failed to update group '{name}' ({response.status_code}): {response_text}")
+            print(f"{ts()} [Website] Failed ({response.status_code}): {response_text}")
 
     except Exception as ex:
-        print(f"{ts()} [Website] Error updating group '{name}': {ex}")
+        print(f"{ts()} [Website] Error creating group: {ex}")
 
 
-async def delete_group_on_api(group_id):
+async def update_group_on_api(vrc_group_id: str, name: str):
     if not ENDPOINT_BASE_GROUP or not API_KEY:
-        print(f"{ts()} [Website] Skipping event update (no endpoint/API key).")
+        print(f"{ts()} [Website] Skipping group update (no endpoint/API key).")
         return
 
-    endpoint = f"{ENDPOINT_BASE_GROUP}/{group_id}/"
+    endpoint = f"{ENDPOINT_BASE_GROUP}/{vrc_group_id}"
+
+    headers = {
+        "content-type": "application/json",
+        "x-api-key": API_KEY,
+        "user-agent": str(CONTACT),
+    }
+
+    payload = {
+        "vrc_group_id": str(vrc_group_id),
+        "name": str(name),
+    }
+
+    print(f"{ts()} [Website] Updating group '{name}' ({vrc_group_id})...")
+
+    try:
+        response = requests.put(
+            endpoint,
+            headers=headers,
+            json=payload,
+            timeout=90
+        )
+
+        try:
+            response_text = json.dumps(response.json(), indent=2)
+        except Exception:
+            response_text = response.text or "<no response body>"
+
+        if response.status_code in (200, 201):
+            print(f"{ts()} [Website] Group updated.\n[Website Response] {response_text}")
+        else:
+            print(f"{ts()} [Website] Failed ({response.status_code}): {response_text}")
+
+    except Exception as ex:
+        print(f"{ts()} [Website] Error updating group: {ex}")
+
+
+async def delete_group_on_api(vrc_group_id: str):
+    if not ENDPOINT_BASE_GROUP or not API_KEY:
+        print(f"{ts()} [Website] Skipping group deletion (no endpoint/API key).")
+        return
+
+    endpoint = f"{ENDPOINT_BASE_GROUP}/{vrc_group_id}"
 
     headers = {
         "x-api-key": API_KEY,
-        "user-agent": f"{CONTACT}",
+        "user-agent": str(CONTACT),
     }
 
-    print(f"{ts()} [Website] Deleting group {group_id}")
+    print(f"{ts()} [Website] Deleting group {vrc_group_id}...")
 
     try:
         response = requests.delete(endpoint, headers=headers, timeout=90)
@@ -106,9 +111,9 @@ async def delete_group_on_api(group_id):
             response_text = response.text or "<no response body>"
 
         if response.status_code in (200, 201):
-            print(f"{ts()} [Website] Successfully deleted group '{group_id}'.\n[Website Response] {response_text}")
+            print(f"{ts()} [Website] Group deleted.\n[Website Response] {response_text}")
         else:
-            print(f"{ts()} [Website] Failed to delete group '{group_id}' ({response.status_code}): {response_text}")
+            print(f"{ts()} [Website] Failed ({response.status_code}): {response_text}")
 
     except Exception as ex:
-        print(f"{ts()} [Website] Error deleting group '{group_id}': {ex}")
+        print(f"{ts()} [Website] Error deleting group: {ex}")
