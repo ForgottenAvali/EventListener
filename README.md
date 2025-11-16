@@ -57,10 +57,9 @@ You will need;
 - A vrchat account you (or someone else) have access to.
 - Python 3.9 or higher
 - Dependencies:
-  - `dotenv`
-  - `python-dotenv`
-  - `vrchatapi`
-  - `requests`
+  - `python-dotenv 1.1.0`
+  - `vrchatapi 1.20.4`
+  - `requests 2.32.5`
 
 Install dependencies with:
 
