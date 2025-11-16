@@ -42,8 +42,9 @@ A open-source, read only vrchat bot that will grab events from the given groups 
 
 ## Groups
 
-- Tiny Cafe
+- Tiny Café
 - Wolfie's Hangout
+- Fuzo's Furry Den
 - More will be added soon!
 
 ---
