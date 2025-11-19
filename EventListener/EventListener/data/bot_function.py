@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from data.extra import ts
 from data.website.groups import add_group_to_api, update_group_on_api, delete_group_on_api
 from data.website.events import add_event_to_api, update_event_on_api, delete_event_on_api
-from data.vrchatapi import reload_env, fetch_group_info, fetch_vrc_events
+from data.vrchatapi import reload_env, fetch_group_info, fetch_vrc_events, join_group, is_in_group
 
 
 async def command_listener():
@@ -48,16 +48,33 @@ async def command_listener():
 # Groups
 
 
+# join_group
+        elif command == "join_group" and len(parts) == 2:
+            group_id = parts[1]
+
+            result = await join_group(group_id)
+            if result:
+                print(f"{ts()} [System] Joined group {group_id} successfully.")
+            else:
+                print(f"{ts()} [System] Join group request failed.")
+            continue
+
+
 # add_group
         elif command == "add_group" and len(parts) == 2:
             group_id = parts[1]
+
+            in_group = await is_in_group(group_id)
+            if not in_group:
+                print(f"{ts()} [System] Cannot add {group_id}: bot is not a member of this group.")
+                print(f"{ts()} [System] Run: join_group {group_id}")
+                continue
+
             info = await fetch_group_info(group_id)
 
             if info:
-                await add_group_to_api(
-                    info["id"],
-                    info["name"]
-                )
+                await add_group_to_api(info["id"], info["name"])
+                print(f"{ts()} [System] Added group {info['name']} ({info['id']}) to API.")
             else:
                 print(f"{ts()} [System] Failed to get group info for {group_id}")
             continue

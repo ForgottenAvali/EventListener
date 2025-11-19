@@ -71,6 +71,7 @@ Install dependencies with:
 
         VRC_USER
         VRC_PASS
+        USER_ID (Your bots vrchat user id)
         CONTACT (Format being '{ProgramName}/{Version} (contact: {Email})')
         GROUP_ID (Separated by commas like 'grp_123, grp_456, grp_789')
         ENDPOINT_BASE_EVENT

@@ -1,7 +1,7 @@
 import os, asyncio, json, logging, http.cookiejar, requests, vrchatapi
 
 
-from vrchatapi.api import authentication_api, groups_api, calendar_api
+from vrchatapi.api import authentication_api, groups_api, calendar_api, users_api
 from vrchatapi.models.two_factor_email_code import TwoFactorEmailCode
 from vrchatapi.exceptions import UnauthorizedException, ApiException
 
@@ -19,6 +19,7 @@ VRC_USER = os.getenv("VRC_USER")
 VRC_PASS = os.getenv("VRC_PASS")
 CONTACT = os.getenv("CONTACT")
 GROUP_ID = os.getenv("GROUP_ID", "")
+user_id = os.getenv("USER_ID")
 
 GROUP_IDS = [gid.strip() for gid in GROUP_ID.split(",") if gid.strip()]
 
@@ -39,6 +40,7 @@ client.user_agent = f"{CONTACT}"
 auth_api = authentication_api.AuthenticationApi(client)
 groups_api_instance = groups_api.GroupsApi(client)
 calendar_api_instance = calendar_api.CalendarApi(client)
+users_api_instance = users_api.UsersApi(client)
 
 
 AUTH_TOKEN_FILE = os.path.join(os.path.dirname(__file__), "..", "..", "vrc_auth_token.json")
@@ -131,7 +133,6 @@ async def login_vrc():
 
 
 async def ensure_connection():
-    """Re-login every 5 minutes to keep the session alive"""
     while True:
         try:
             await login_vrc()
@@ -141,7 +142,6 @@ async def ensure_connection():
 
 
 def reload_env(verbose=True):
-    """Reload .env and update registered groups"""
     load_dotenv(override=True)
     global GROUP_ID, GROUP_IDS
 
@@ -153,7 +153,6 @@ def reload_env(verbose=True):
 
 
 async def fetch_group_events(group_id: str):
-    """Fetch all calendar events for a specific group, including ongoing ones"""
     loop = asyncio.get_running_loop()
     try:
         result = await loop.run_in_executor(
@@ -207,7 +206,6 @@ async def fetch_group_events(group_id: str):
 
 
 async def fetch_vrc_events():
-    """Fetch all group events and save only new ones to file"""
     existing = load_existing_events()
     new_entries = []
     new_events = []
@@ -232,7 +230,6 @@ async def fetch_vrc_events():
 
 
 async def fetch_group_info(group_id: str):
-    """Fetch a VRChat group's name and description by ID"""
     loop = asyncio.get_running_loop()
     try:
         group = await loop.run_in_executor(None, lambda: groups_api_instance.get_group(group_id))
@@ -247,4 +244,39 @@ async def fetch_group_info(group_id: str):
     except Exception as e:
         print(f"{ts()} [VRChat-Group] Failed to fetch info for {group_id}: {e}")
         return None
+    
+
+async def join_group(group_id: str, groups_api_instance):
+    loop = asyncio.get_running_loop()
+
+    try:
+        group = await loop.run_in_executor(
+            None,
+            lambda: groups_api_instance.join_group(group_id)
+        )
+        return group
+
+    except Exception as e:
+        print(f"[VRChat-Group] Failed to join group {group_id}: {e}")
+        return None
+    
+
+async def is_in_group(group_id: str):
+    loop = asyncio.get_running_loop()
+
+    try:
+        groups = await loop.run_in_executor(
+            None,
+            lambda: users_api_instance.get_user_groups(user_id)
+        )
+
+        for g in groups:
+            if g.id == group_id:
+                return True
+
+        return False
+
+    except Exception as e:
+        print(f"{ts()} [VRChat-Group] Failed to check group membership: {e}")
+        return False
 
