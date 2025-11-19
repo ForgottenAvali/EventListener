@@ -6,35 +6,24 @@ from vrchatapi.models.two_factor_email_code import TwoFactorEmailCode
 from vrchatapi.exceptions import UnauthorizedException, ApiException
 
 
-from dotenv import load_dotenv
 from datetime import datetime, timezone
 
 
 from data.extra import ts, load_existing_events, save_new_events
 from data.website.events import send_to_website
+import data.env_config as config
 
 
-load_dotenv()
-VRC_USER = os.getenv("VRC_USER")
-VRC_PASS = os.getenv("VRC_PASS")
-CONTACT = os.getenv("CONTACT")
-GROUP_ID = os.getenv("GROUP_ID", "")
-user_id = os.getenv("USER_ID")
-
-GROUP_IDS = [gid.strip() for gid in GROUP_ID.split(",") if gid.strip()]
+config.VRC_USER
+config.VRC_PASS
+config.user_id
+config.CONTACT
+config.GROUP_IDS
 
 
-if not VRC_USER or not VRC_PASS:
-    raise ValueError("Missing VRChat login credentials in .env")
-if not CONTACT:
-    raise ValueError("Missing CONTACT in .env")
-if not GROUP_ID:
-    raise ValueError("Missing GROUP_ID in .env")
-
-
-config = vrchatapi.Configuration(username=VRC_USER, password=VRC_PASS)
-client = vrchatapi.ApiClient(config)
-client.user_agent = f"{CONTACT}"
+configuration = vrchatapi.Configuration(username=config.VRC_USER, password=config.VRC_PASS)
+client = vrchatapi.ApiClient(configuration)
+client.user_agent = f"{config.CONTACT}"
 
 
 auth_api = authentication_api.AuthenticationApi(client)
@@ -96,7 +85,7 @@ async def login_vrc():
 
         return user
 
-    except vrchatapi.exceptions.UnauthorizedException as e:
+    except UnauthorizedException as e:
         body = getattr(e, "body", None)
         if body:
             try:
@@ -139,17 +128,6 @@ async def ensure_connection():
         except Exception as ex:
             logging.error(f"{ts()} [VRChat-Auth] Reconnect failed: {ex}")
         await asyncio.sleep(300)
-
-
-def reload_env(verbose=True):
-    load_dotenv(override=True)
-    global GROUP_ID, GROUP_IDS
-
-    GROUP_ID = os.getenv("GROUP_ID", "")
-    GROUP_IDS = [gid.strip() for gid in GROUP_ID.split(",") if gid.strip()]
-
-    if verbose:
-        print(f"{ts()} [System] Reloaded .env file. Active groups: {GROUP_IDS}")
 
 
 async def fetch_group_events(group_id: str):
@@ -210,7 +188,7 @@ async def fetch_vrc_events():
     new_entries = []
     new_events = []
 
-    for gid in GROUP_IDS:
+    for gid in config.GROUP_IDS:
         print(f"{ts()} [VRChat-Calendar] Fetching events for group {gid}...")
         events = await fetch_group_events(gid)
         await asyncio.sleep(1)
@@ -244,22 +222,7 @@ async def fetch_group_info(group_id: str):
     except Exception as e:
         print(f"{ts()} [VRChat-Group] Failed to fetch info for {group_id}: {e}")
         return None
-    
 
-async def join_group(group_id: str, groups_api_instance):
-    loop = asyncio.get_running_loop()
-
-    try:
-        group = await loop.run_in_executor(
-            None,
-            lambda: groups_api_instance.join_group(group_id)
-        )
-        return group
-
-    except Exception as e:
-        print(f"[VRChat-Group] Failed to join group {group_id}: {e}")
-        return None
-    
 
 async def is_in_group(group_id: str):
     loop = asyncio.get_running_loop()
@@ -267,7 +230,7 @@ async def is_in_group(group_id: str):
     try:
         groups = await loop.run_in_executor(
             None,
-            lambda: users_api_instance.get_user_groups(user_id)
+            lambda: users_api_instance.get_user_groups(config.user_id)
         )
 
         for g in groups:
@@ -280,3 +243,17 @@ async def is_in_group(group_id: str):
         print(f"{ts()} [VRChat-Group] Failed to check group membership: {e}")
         return False
 
+
+async def join_group(group_id: str):
+    loop = asyncio.get_running_loop()
+
+    try:
+        group = await loop.run_in_executor(
+            None,
+            lambda: groups_api_instance.join_group(group_id)
+        )
+        return group
+
+    except Exception as e:
+        print(f"[VRChat-Group] Failed to join group {group_id}: {e}")
+        return None
