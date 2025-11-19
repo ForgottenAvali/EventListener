@@ -12,7 +12,6 @@ BASE_DIR = os.path.dirname(__file__)
 EVENTS_FILE = os.path.join(BASE_DIR, "..", "events.txt")
 
 
-
 config.API_KEY
 config.GROUP_IDS
 config.ENDPOINT_BASE_EVENT
