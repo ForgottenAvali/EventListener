@@ -1,23 +1,24 @@
 import os, json, requests, asyncio
-from dotenv import load_dotenv
+
 
 from data.extra import ts, fmt_date
+import data.env_config as config
 
-load_dotenv()
-CONTACT = os.getenv("CONTACT")
-ENDPOINT_BASE_EVENT = os.getenv("ENDPOINT_BASE_EVENT")
-API_KEY = os.getenv("API_KEY")
+
+config.CONTACT
+config.API_KEY
+config.ENDPOINT_BASE_EVENT
 
 
 async def send_to_website(events):
-    if not ENDPOINT_BASE_EVENT or not API_KEY:
+    if not config.ENDPOINT_BASE_EVENT or not config.API_KEY:
         print(f"{ts()} [Website] Skipping website sending (no endpoint/API key).")
         return
 
     headers = {
         "content-type": "application/json",
-        "x-api-key": API_KEY,
-        "user-agent": str(CONTACT),
+        "x-api-key": config.API_KEY,
+        "user-agent": str(config.CONTACT),
     }
 
     sent_count = 0
@@ -40,7 +41,7 @@ async def send_to_website(events):
         print(f"{ts()} [Website] Sending event: {e['event_id']} from {e['group_id']}")
 
         try:
-            response = requests.post(ENDPOINT_BASE_EVENT, headers=headers, json=payload, timeout=90)
+            response = requests.post(config.ENDPOINT_BASE_EVENT, headers=headers, json=payload, timeout=90)
 
             try:
                 response_text = json.dumps(response.json(), indent=2)
@@ -62,7 +63,7 @@ async def send_to_website(events):
 
 
 async def add_event_to_api(group_id, vrc_event_id, name, description, starts_at, ends_at, category, access_type, platforms, image_url=None, tags=None):
-    if not ENDPOINT_BASE_EVENT or not API_KEY:
+    if not config.ENDPOINT_BASE_EVENT or not config.API_KEY:
         print(f"{ts()} [Website] Skipping event creation (no endpoint/API key).")
         return
 
@@ -82,14 +83,14 @@ async def add_event_to_api(group_id, vrc_event_id, name, description, starts_at,
 
     headers = {
         "content-type": "application/json",
-        "x-api-key": API_KEY,
-        "user-agent": str(CONTACT),
+        "x-api-key": config.API_KEY,
+        "user-agent": str(config.CONTACT),
     }
 
     print(f"{ts()} [Website] Creating event '{name}' ({vrc_event_id})...")
 
     try:
-        response = requests.post(ENDPOINT_BASE_EVENT, headers=headers, json=payload, timeout=90)
+        response = requests.post(config.ENDPOINT_BASE_EVENT, headers=headers, json=payload, timeout=90)
         try:
             response_text = json.dumps(response.json(), indent=2)
         except Exception:
@@ -105,11 +106,11 @@ async def add_event_to_api(group_id, vrc_event_id, name, description, starts_at,
 
 
 async def update_event_on_api(website_id, group_id, vrc_event_id, name, description, starts_at, ends_at, category, access_type, platforms, image_url=None, tags=None):
-    if not ENDPOINT_BASE_EVENT or not API_KEY:
+    if not config.ENDPOINT_BASE_EVENT or not config.API_KEY:
         print(f"{ts()} [Website] Skipping event update (no endpoint/API key).")
         return
 
-    endpoint = f"{ENDPOINT_BASE_EVENT}/{website_id}"
+    endpoint = f"{config.ENDPOINT_BASE_EVENT}/{website_id}"
 
     payload = {
         "vrc_group_id": group_id,
@@ -127,8 +128,8 @@ async def update_event_on_api(website_id, group_id, vrc_event_id, name, descript
 
     headers = {
         "content-type": "application/json",
-        "x-api-key": API_KEY,
-        "user-agent": str(CONTACT),
+        "x-api-key": config.API_KEY,
+        "user-agent": str(config.CONTACT),
     }
 
     print(f"{ts()} [Website] Updating event '{name}' ({vrc_event_id}) at {endpoint}...")
@@ -151,15 +152,15 @@ async def update_event_on_api(website_id, group_id, vrc_event_id, name, descript
 
 
 async def delete_event_on_api(website_id):
-    if not ENDPOINT_BASE_EVENT or not API_KEY:
+    if not config.ENDPOINT_BASE_EVENT or not config.API_KEY:
         print(f"{ts()} [Website] Skipping event deletion (no endpoint/API key).")
         return
 
-    endpoint = f"{ENDPOINT_BASE_EVENT}/{website_id}"
+    endpoint = f"{config.ENDPOINT_BASE_EVENT}/{website_id}"
 
     headers = {
-        "x-api-key": API_KEY,
-        "user-agent": str(CONTACT),
+        "x-api-key": config.API_KEY,
+        "user-agent": str(config.CONTACT),
     }
 
     print(f"{ts()} [Website] Deleting event {website_id}...")

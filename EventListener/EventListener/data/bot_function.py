@@ -1,10 +1,10 @@
 import asyncio, os
-from dotenv import load_dotenv
 
-from data.extra import ts
+
+from data.extra import ts, reload_env
 from data.website.groups import add_group_to_api, update_group_on_api, delete_group_on_api
 from data.website.events import add_event_to_api, update_event_on_api, delete_event_on_api
-from data.vrchatapi import reload_env, fetch_group_info, fetch_vrc_events, join_group, is_in_group
+from data.vrchatapi import fetch_group_info, fetch_vrc_events, join_group, is_in_group
 
 
 async def command_listener():
@@ -36,13 +36,20 @@ async def command_listener():
             print("  exit / quit")
             continue
 
+
+# exit/quit
         elif command in ("exit", "quit"):
             print(f"{ts()} [System] Exiting...")
             os._exit(0)
 
+
+# reload_env
         elif command == "reload_env":
-            reload_env()
-            continue
+            if len(parts) > 1:
+                reload_env(*parts[1:])
+            else:
+                print(f"{ts()} [System] Error: reload_env requires at least one argument.")
+                print(f"{ts()} [System] Usage: reload_env api_key|group_ids|endpoints")
 
 
 # Groups
