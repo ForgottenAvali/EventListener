@@ -5,6 +5,7 @@ from data.extra import ts, reload_env
 from data.website.groups import add_group_to_api, update_group_on_api, delete_group_on_api
 from data.website.events import add_event_to_api, update_event_on_api, delete_event_on_api
 from data.vrchatapi import fetch_group_info, fetch_vrc_events, join_group, is_in_group
+import data.env_config as config
 
 
 async def command_listener():
@@ -73,7 +74,7 @@ async def command_listener():
 
             in_group = await is_in_group(group_id)
             if not in_group:
-                print(f"{ts()} [System] Cannot add {group_id}: bot is not a member of this group.")
+                print(f"{ts()} [System] Cannot add {group_id}: bot ({config.user_id}) is not a member of this group.")
                 print(f"{ts()} [System] Run: join_group {group_id}")
                 continue
 
