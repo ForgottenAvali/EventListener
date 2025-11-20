@@ -5,7 +5,7 @@ load_dotenv(override=True)
 
 VRC_USER = os.getenv("VRC_USER", "")
 VRC_PASS = os.getenv("VRC_PASS", "")
-user_id = os.getenv("USER_ID", "")
+user_id = os.getenv("USER_ID")
 
 API_KEY = os.getenv("API_KEY", "")
 ENDPOINT_BASE_EVENT = os.getenv("ENDPOINT_BASE_EVENT", "")
