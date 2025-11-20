@@ -16,7 +16,6 @@ import data.env_config as config
 
 config.VRC_USER
 config.VRC_PASS
-config.user_id
 config.CONTACT
 config.GROUP_IDS
 
@@ -226,22 +225,22 @@ async def fetch_group_info(group_id: str):
 
 async def is_in_group(group_id: str):
     loop = asyncio.get_running_loop()
+    bot_user_id = config.user_id
 
     try:
-        groups = await loop.run_in_executor(
+        await loop.run_in_executor(
             None,
-            lambda: users_api_instance.get_user_groups(config.user_id)
+            lambda: groups_api_instance.get_group_member(group_id, bot_user_id)
         )
-
-        for g in groups:
-            if g.id == group_id:
-                return True
-
-        return False
+        return True
 
     except Exception as e:
-        print(f"{ts()} [VRChat-Group] Failed to check group membership: {e}")
+        if "404" in str(e) or "not found" in str(e).lower():
+            return False
+
+        print(f"[VRChat-Group] Failed membership check: {e}")
         return False
+
 
 
 async def join_group(group_id: str):
